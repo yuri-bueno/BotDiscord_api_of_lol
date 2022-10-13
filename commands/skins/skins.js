@@ -157,7 +157,10 @@ module.exports = {
             })
         
             coletor.on('end', (collected, reason) => {
-                if (reason === 'time') interaction.deleteReply()
+                if (reason === 'time tirar isso daqui dps') interaction.editReply({
+                    content: 'tempo',
+                    components: []
+                })
             })
     }}
 }

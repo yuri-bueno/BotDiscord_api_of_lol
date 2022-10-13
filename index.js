@@ -2,7 +2,9 @@ const Discord = require('discord.js')
 const client = new Discord.Client({ intents: [1, 512, 32768, 2, 128] })
 const fs = require("fs");
 //const config = require("./config.json")
-const dotenv =require('dotenv')
+const dotenv = require('dotenv')
+
+const { connect } = require('mongoose')
 
 dotenv.config()
 
@@ -12,6 +14,8 @@ client.login(process.env.TOKEN_DISCORD)
 client.commands = new Discord.Collection();
 client.aliases = new Discord.Collection();
 client.categories = fs.readdirSync(`./commands/`);
+
+
 
 fs.readdirSync('./commands/').forEach(local => {
     const comandos = fs.readdirSync(`./commands/${local}`).filter(arquivo => arquivo.endsWith('.js'))
@@ -29,7 +33,9 @@ fs.readdirSync('./commands/').forEach(local => {
 
 client.on("messageCreate", async (message) => {
 
-    let prefix = process.env.PREFIX.toString();
+    // console.log(message);
+
+    let prefix = process.env.PREFIX
 
     if (message.author.bot) return;
 
@@ -55,4 +61,15 @@ client.on("messageCreate", async (message) => {
     }
 });
 
-client.on("ready", () => { console.log(`${client.user.username} está online e metendo!!!`); })
+async function connectToDatabase() {
+    const connection = await connect(`mongodb+srv://drailer:${process.env.DB_KEY}@discordbot.bxlabum.mongodb.net/arrozdoce?retryWrites=true&w=majority`)
+    console.log("conectado com o banco de dados")
+}
+
+client.on("ready", () => {
+
+
+    console.log(`${client.user.username} está online e metendo!!!`);
+    connectToDatabase()
+
+})
